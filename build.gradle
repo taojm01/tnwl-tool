@@ -1,0 +1,77 @@
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
+    }
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.7.1'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.7.1'
+    id 'com.google.cloud.tools.jib' version '3.2.0'
+    id 'java'
+    id 'idea'
+}
+
+
+
+sourceCompatibility = JavaVersion.VERSION_17
+compileJava.options.encoding = "UTF-8"
+
+group = 'com.tuoniao'
+//version = '0.0.1-SNAPSHOT'
+
+
+jib {
+    from {
+        image = 'registry.cn-shanghai.aliyuncs.com/tnwl/eclipse-temurin:17.0.3_7-jdk'
+    }
+    allowInsecureRegistries = true
+    container {
+        ports = ['7007']
+        jvmFlags = ['-Duser.timezone=Asia/Shanghai']
+        mainClass = "com.tuoniao.RunApplication"
+        environment = [
+                'db_url':'jdbc:mysql://gangkou56.mysql.polardb.rds.aliyuncs.com/saas?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true',
+                'db_username':'saas_test',
+                'db_password':'1wax@QSZ'
+        ]
+
+    }
+}
+
+
+repositories {
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven { url 'https://code.aliyun.com/kar/gradle-all-zip/raw/master/'}
+    maven { url 'https://mvnrepository.com/artifact/'}
+    mavenCentral()
+}
+
+bootRun {
+    systemProperty 'com.example.property', findProperty('example') ?: 'default'
+    systemProperty 'SWAGGER_ENABLED', 'true'
+    systemProperty 'server.port', '7007'
+    systemProperty 'spring.profiles.active', 'dev'
+	systemProperty 'db_url','jdbc:mysql://gangkou56.mysql.polardb.rds.aliyuncs.com/saas?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true'
+	systemProperty 'db_username','saas_test'
+	systemProperty 'db_password','1wax@QSZ'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.33'
+    implementation 'com.alibaba:fastjson:2.0.32'
+    implementation 'cn.hutool:hutool-all:5.8.18'
+    implementation 'org.projectlombok:lombok:1.18.26'
+    compileOnly 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+    implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.6.15'
+}
+

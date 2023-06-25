@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuoniao.dao.SearchMapper">
+
+  <select id="outstandingBill" resultType="com.tuoniao.entity.OutstandingBill">
+    SELECT
+      tb.id,
+      sc.name_cn company,
+      tra.money rechargeBalance,
+      DATE_FORMAT(tb.billing_time,'%Y年%m月') date,
+      DATE_FORMAT(tb.repayment_time,'%Y年%m月%d日') repayment,
+      tb.amount amount,
+      (select SUM(freight_paid) from tms_bill_detail tbd where tbd.invoice_no = tb.invoice_no) freightPaid,
+      (select SUM(unpaid_freight) from tms_bill_detail tbd where tbd.invoice_no = tb.invoice_no) unpaidFreight
+    FROM
+      tms_bill tb
+      LEFT JOIN tenant_recharge_account tra ON tb.tenant_id = tra.tenant_id
+      LEFT JOIN sys_company sc ON sc.id = tb.tenant_id
+    WHERE
+      tb.type IN ( 1, 2 )
+      AND tb.STATUS = 0
+      AND tra.type = '舟山'
+      AND tra.money > 0
+    ORDER BY sc.name_cn
+  </select>
+
+    <select id="companyAccount" resultType="com.tuoniao.vo.CompanyAccountVO">
+      SELECT
+        tu.id,
+        sc.name_cn companyName,
+        tu.name_cn nameCn,
+        tu.user_name username,
+        tu.password,
+        tu.status,
+        tu.user_level level
+      FROM
+        tms_user tu
+        LEFT JOIN sys_company sc ON sc.id = tu.tenant_id
+      WHERE
+        tu.removed = 0
+        AND sc.removed = 0
+        and sc.name_cn like CONCAT('%', #{companyNameLike,jdbcType=VARCHAR}, '%')
+      limit 20
+    </select>
+  <select id="transactionRecordByOrderNo" resultType="com.tuoniao.vo.TransactionRecordVO">
+    SELECT
+      ttr.id,
+      sc.name_cn company,
+      CASE ttr.flow_state
+      WHEN 1 THEN '待出账'
+      WHEN 2 THEN '已出账待结清'
+      WHEN 3 THEN '已结清'
+      WHEN 4 THEN '挂账'
+      ELSE '未知' END state,
+      ttr.create_time transactionTime,
+      ttr.fee_type fee,
+      ttr.amount,
+      CASE ttr.transaction_type
+      WHEN 'income' THEN '收入'
+      ELSE '支出' END type,
+      ttr.balance,
+      ttr.transaction_channel channel
+    FROM
+      tms_transaction_record ttr
+      LEFT JOIN outsource_cargo_pool ocp ON ocp.id = ttr.relation_id
+      LEFT JOIN sys_company sc ON sc.id = ocp.tenant_id
+    WHERE
+      ttr.removed = 0
+      AND ttr.relation_type IN ( 1, 4, 5, 6 )
+      AND ocp.order_no = #{orderNo,jdbcType=VARCHAR}
+    ORDER BY ttr.create_time ASC
+  </select>
+
+</mapper>
