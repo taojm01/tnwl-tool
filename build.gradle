@@ -1,3 +1,5 @@
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 buildscript {
     repositories {
@@ -25,20 +27,19 @@ group = 'com.tuoniao'
 
 
 jib {
-    from {
-        image = 'registry.cn-shanghai.aliyuncs.com/tnwl/eclipse-temurin:17.0.3_7-jdk'
+    to {
+        tags = ["latest"]
     }
-    allowInsecureRegistries = true
     container {
         ports = ['7007']
         jvmFlags = ['-Duser.timezone=Asia/Shanghai']
         mainClass = "com.tuoniao.RunApplication"
+        creationTime = 'USE_CURRENT_TIMESTAMP'
         environment = [
                 'db_url':'jdbc:mysql://gangkou56.mysql.polardb.rds.aliyuncs.com/saas?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true',
                 'db_username':'saas_test',
                 'db_password':'1wax@QSZ'
         ]
-
     }
 }
 

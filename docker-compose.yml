@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  tnwl-tool:
+    image: tnwl-tool
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "7007:7007"
