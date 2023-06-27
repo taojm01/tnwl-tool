@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   tnwl-tool:
-    image: tnwl-tool
+    image: registry.cn-hangzhou.aliyuncs.com/taojm/tnwl-tool
     restart: always
     environment:
       - TZ=Asia/Shanghai

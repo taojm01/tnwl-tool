@@ -20,16 +20,32 @@ sourceCompatibility = JavaVersion.VERSION_17
 compileJava.options.encoding = "UTF-8"
 
 group = 'com.tuoniao'
-//version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
+ext {
+    set('registryUrl',"registry.cn-hangzhou.aliyuncs.com")
+    set('registryNamespace',"taojm")
+    set('registryUsername',"taojiaming")
+    set('registryPassword',"taojm980122")
+}
 
 jib {
+
+    from {
+        image = "registry.cn-shanghai.aliyuncs.com/starxin/docker-jib:1.0"
+    }
     to {
-        tags = ["latest"]
+        image = "${registryUrl}/${registryNamespace}/${project.getName()}:${project.getVersion()}"
+//        tags = ["latest","${project.getVersion()}"]
+        auth {
+            username = "${registryUsername}"
+            password = "${registryPassword}"
+        }
     }
     container {
         ports = ['7007']
         jvmFlags = ['-Duser.timezone=Asia/Shanghai']
+        labels = ['vendor':'tnwl']
         mainClass = "com.tuoniao.RunApplication"
         creationTime = 'USE_CURRENT_TIMESTAMP'
         environment = [
