@@ -30,7 +30,6 @@ ext {
 }
 
 jib {
-
     from {
         image = "registry.cn-shanghai.aliyuncs.com/starxin/docker-jib:1.0"
     }
@@ -45,7 +44,6 @@ jib {
     container {
         ports = ['7007']
         jvmFlags = ['-Duser.timezone=Asia/Shanghai']
-        labels = ['vendor':'tnwl']
         mainClass = "com.tuoniao.RunApplication"
         creationTime = 'USE_CURRENT_TIMESTAMP'
         environment = [
