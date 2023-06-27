@@ -32,7 +32,8 @@
         tu.user_name username,
         tu.password,
         tu.status,
-        tu.user_level level
+        tu.user_level level,
+        sc.temp_secret_key secretKey
       FROM
         tms_user tu
         LEFT JOIN sys_company sc ON sc.id = tu.tenant_id

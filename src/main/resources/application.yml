@@ -21,23 +21,11 @@ spring:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
+
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
   type-aliases-package: com.tuoniao.entity
-springdoc:
-  packagesToScan: com.tuoniao.controller
-  api-docs:
-    enabled: ${SWAGGER_ENABLED:false}
-    path: /api/tool/api-docs/v3
-  swagger-ui:
-    path: /api/tool/swagger-ui
-    enabled: ${SWAGGER_ENABLED:false}
-    configUrl: /api/tool/api-docs/v3/swagger-config
-    disable-swagger-default-url: true
-    persistAuthorization: true
-    urls:
-      - url: /api/tool/api-docs/v3
-        name: tool
+
 logging:
   level:
     com.tuoniao.dao: debug
