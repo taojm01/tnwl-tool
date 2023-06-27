@@ -33,6 +33,7 @@ jib {
         mainClass = "com.tuoniao.RunApplication"
         creationTime = 'USE_CURRENT_TIMESTAMP'
         environment = [
+                'SWAGGER_ENABLED':'true',
                 'db_url':'jdbc:mysql://gangkou56.mysql.polardb.rds.aliyuncs.com/saas?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true',
                 'db_username':'saas_test',
                 'db_password':'1wax@QSZ'

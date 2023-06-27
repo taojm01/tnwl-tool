@@ -7,6 +7,10 @@ spring:
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 20MB
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: ${db_url}
@@ -21,10 +25,24 @@ spring:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
-
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
   type-aliases-package: com.tuoniao.entity
+
+springdoc:
+  packagesToScan: com.tuoniao.controller
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:false}
+    path: /api/tnwl-tool/api-docs/v3
+  swagger-ui:
+    path: /api/tnwl-tool/swagger-ui
+    enabled: ${SWAGGER_ENABLED:false}
+    configUrl: /api/tnwl-tool/api-docs/v3/swagger-config
+    disable-swagger-default-url: true
+    urls:
+      - url: /api/tnwl-tool/api-docs/v3
+        name: tool
+#  paths-to-match: /api/search/**,/api/op/**
 
 logging:
   level:
