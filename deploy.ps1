@@ -19,4 +19,4 @@ if (-not $?) {
     return
 }
 docker image rm $(docker image ls -a -q)
-docker logs -f -t $imageName
+docker logs -f $imageName
