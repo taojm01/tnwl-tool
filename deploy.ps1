@@ -1,18 +1,24 @@
 $imageName="tnwl-tool"
+$nextVersion="0.0.1"
+$registryImage="registry.cn-shanghai.aliyuncs.com/taojm/{0}:{1}" -f $imageName, $nextVersion
+Write-Host($imageName)
+Write-Host($registryImage)
 
-./gradlew jibDockerBuild
-
+./gradlew jib --image=$registryImage
 if (-not $?) {
     Write-Warning("build image failed")
     return
 }
-# docker-compose stop $imageName
-# docker-compose rm -f $imageName
 
-docker-compose up -d $imageName
+docker pull $registryImage
+
+docker stop $imageName
+docker rm -f $imageName
+docker run -it -d --name $imageName -p 7007:7007 $registryImage
+
 if (-not $?) {
     Write-Warning("{0} start failed" -f $imageName)
     return
 }
 docker image rm $(docker image ls -a -q)
-docker-compose logs -f $imageName
+docker logs -f -t $imageName
