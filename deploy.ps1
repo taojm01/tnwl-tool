@@ -1,8 +1,6 @@
 $imageName="tnwl-tool"
 $nextVersion="0.0.1"
 $registryImage="registry.cn-shanghai.aliyuncs.com/taojm/{0}:{1}" -f $imageName, $nextVersion
-Write-Host($imageName)
-Write-Host($registryImage)
 
 ./gradlew jib --image=$registryImage
 if (-not $?) {
