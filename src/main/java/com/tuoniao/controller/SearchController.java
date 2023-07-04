@@ -1,5 +1,7 @@
 package com.tuoniao.controller;
 
+import com.tuoniao.dto.AbnormalTrackDTO;
+import com.tuoniao.vo.AbnormalTrackVO;
 import com.tuoniao.vo.OutstandingBillVO;
 import com.tuoniao.vo.CompanyAccountVO;
 import com.tuoniao.service.SearchService;
@@ -49,5 +51,14 @@ public class SearchController {
     })
     public List<TransactionRecordVO> transactionRecordByOrderNo(@RequestParam("orderNo") String orderNo) {
         return searchService.transactionRecordByOrderNo(orderNo);
+    }
+
+    @GetMapping("/abnormal-trajectory")
+    @Operation(summary = "异常轨迹")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = AbnormalTrackVO.class))))
+    })
+    public List<AbnormalTrackVO> abnormalTrack(@ModelAttribute AbnormalTrackDTO dto) {
+        return searchService.abnormalTrack(dto);
     }
 }

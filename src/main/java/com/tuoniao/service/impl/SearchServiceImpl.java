@@ -2,7 +2,9 @@ package com.tuoniao.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.tuoniao.dao.SearchMapper;
+import com.tuoniao.dto.AbnormalTrackDTO;
 import com.tuoniao.entity.OutstandingBill;
+import com.tuoniao.vo.AbnormalTrackVO;
 import com.tuoniao.vo.OutstandingBillVO;
 import com.tuoniao.vo.CompanyAccountVO;
 import com.tuoniao.service.SearchService;
@@ -56,5 +58,10 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<TransactionRecordVO> transactionRecordByOrderNo(String orderNo) {
         return searchMapper.transactionRecordByOrderNo(orderNo);
+    }
+
+    @Override
+    public List<AbnormalTrackVO> abnormalTrack(AbnormalTrackDTO dto) {
+        return searchMapper.abnormalTrack(dto);
     }
 }

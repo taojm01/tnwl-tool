@@ -3,6 +3,8 @@ package com.tuoniao.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
+import com.tuoniao.controller.BadRequestException;
+import com.tuoniao.dto.VerificationTrackDTO;
 import com.tuoniao.dto.WriteCaptchaCodeDTO;
 import com.tuoniao.service.OperationalService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,5 +28,26 @@ public class OperationalServiceImpl implements OperationalService {
             log.info("1.0司机宝验证码--请求参数：{}, 返回：{}", JSONUtil.toJsonStr(dto), resp);
             return resp;
         }
+    }
+
+    @Override
+    public void abnormalTrackRerun(int id) {
+        if(id > 0){
+            var resp = HttpUtil.get("https://tms2.gangkou56.com/api/tms/pool/history/gpsClient/" + id);
+            log.info("异常轨迹重跑--请求参数：{}, 返回：{}", id, resp);
+            if(ObjectUtil.isNotEmpty(resp)){
+                throw new BadRequestException("系统错误");
+            }
+        } else {
+            throw new BadRequestException("非法的请求标识");
+        }
+
+    }
+
+    @Override
+    public String verificationTrack(VerificationTrackDTO dto) {
+        var resp = HttpUtil.post("https://tms2.gangkou56.com/api/truck-track/match-check-points", dto.getJson());
+        log.info("轨迹校验--请求参数：{}, 返回：{}", dto.getJson(), resp);
+        return resp;
     }
 }

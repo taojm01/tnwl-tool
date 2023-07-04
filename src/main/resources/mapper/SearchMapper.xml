@@ -71,5 +71,43 @@
       AND ocp.order_no = #{orderNo,jdbcType=VARCHAR}
     ORDER BY ttr.create_time ASC
   </select>
+    <select id="abnormalTrack" resultType="com.tuoniao.vo.AbnormalTrackVO" parameterType="com.tuoniao.dto.AbnormalTrackDTO">
+      SELECT
+        ocp.id,
+        CASE ocp.is_export WHEN 0 THEN '出口' ELSE '进口' END isExport,
+        ocp.make_box_time makeBoxTime,
+        ocp.order_no orderNo,
+        CONCAT( '{"bizCode":"', ocp.id, '","vclNo":"', tc.plate_number, '","orderedCheckPoints":[',
+        CASE WHEN ocp.is_export = 0 THEN CONCAT( '{"gcj02LatLng":{"lng":', ocp.factory_longitude, ',"lat":', ocp.factory_latitude, '}},{"gcj02LatLng":{"lng":', ry.longitude, ',"lat":', ry.latitude, '}}],' )
+        ELSE CONCAT( '{"gcj02LatLng":{"lng":', sy.longitude, ',"lat":', sy.latitude, '}},{"gcj02LatLng":{"lng":', ocp.factory_longitude, ',"lat":', ocp.factory_latitude, '}}],' ) END,
+        '"trackStartTime":"',
+        CASE WHEN ocp.is_export = 0 THEN DATE ( ocp.make_box_time ) ELSE DATE ( ocp.make_box_time - INTERVAL 1 DAY ) END,
+        '","trackEndTime":"',
+        CASE WHEN ocp.is_export = 0 THEN DATE ( ocp.make_box_time + INTERVAL 1 DAY ) ELSE DATE ( ocp.make_box_time ) END, '"}'
+        ) json
+      FROM
+        outsource_cargo_pool ocp
+        LEFT JOIN outsource_order oo ON oo.outsource_cargo_pool_id = ocp.id
+        LEFT JOIN tms_car tc ON tc.id = oo.car_id
+        LEFT JOIN yard ry ON ry.id = ocp.return_id
+        LEFT JOIN yard sy ON sy.id = ocp.suitcase_id
+      WHERE
+        ocp.state NOT IN ( 11, 12, 13, 15 )
+        AND ocp.is_now_settle IN ( 1, 2, 3 )
+        AND oo.invalid_reason = '轨迹异常'
+      <if test="id != null">
+        and ocp.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="makeBoxTimeStart != null and makeBoxTimeStart.length() > 0">
+        AND ocp.make_box_time <![CDATA[ >= CONCAT(#{makeBoxTimeStart}, ' 00:00:00') ]]>
+      </if>
+      <if test="makeBoxTimeEnd != null and makeBoxTimeEnd.length() > 0">
+        AND ocp.make_box_time <![CDATA[ <= CONCAT(#{makeBoxTimeEnd}, ' 23:59:59') ]]>
+      </if>
+      <if test="orderNo != null">
+        and ocp.order_no = #{orderNo,jdbcType=VARCHAR}
+      </if>
+      ORDER BY id DESC
+    </select>
 
 </mapper>

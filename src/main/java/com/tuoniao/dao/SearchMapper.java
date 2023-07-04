@@ -1,7 +1,9 @@
 package com.tuoniao.dao;
 
 
+import com.tuoniao.dto.AbnormalTrackDTO;
 import com.tuoniao.entity.OutstandingBill;
+import com.tuoniao.vo.AbnormalTrackVO;
 import com.tuoniao.vo.CompanyAccountVO;
 import com.tuoniao.vo.TransactionRecordVO;
 import org.apache.ibatis.annotations.Param;
@@ -17,4 +19,5 @@ public interface SearchMapper {
 
     List<TransactionRecordVO> transactionRecordByOrderNo(@Param("orderNo") String orderNo);
 
+    List<AbnormalTrackVO> abnormalTrack(AbnormalTrackDTO dto);
 }

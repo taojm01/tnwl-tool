@@ -1,5 +1,7 @@
 package com.tuoniao.service;
 
+import com.tuoniao.dto.AbnormalTrackDTO;
+import com.tuoniao.vo.AbnormalTrackVO;
 import com.tuoniao.vo.OutstandingBillVO;
 import com.tuoniao.vo.CompanyAccountVO;
 import com.tuoniao.vo.TransactionRecordVO;
@@ -13,4 +15,6 @@ public interface SearchService {
     List<CompanyAccountVO> companyAccount(String companyNameLike);
 
     List<TransactionRecordVO> transactionRecordByOrderNo(String orderNo);
+
+    List<AbnormalTrackVO> abnormalTrack(AbnormalTrackDTO dto);
 }
