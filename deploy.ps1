@@ -12,7 +12,7 @@ docker pull $registryImage
 
 docker stop $imageName
 docker rm -f $imageName
-docker run -it -d --name $imageName -p 7007:7007 $registryImage
+docker run --restart=always -it -d --name $imageName -p 7007:7007 $registryImage
 
 if (-not $?) {
     Write-Warning("{0} start failed" -f $imageName)
