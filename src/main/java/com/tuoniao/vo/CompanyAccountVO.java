@@ -17,6 +17,4 @@ public class CompanyAccountVO {
     private String status;
 
     private String level;
-
-    private String secretKey;
 }
