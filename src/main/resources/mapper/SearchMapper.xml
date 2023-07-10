@@ -24,7 +24,7 @@
       AND tra.type = '舟山'
       AND tra.money > 0
     HAVING unpaidFreight > 0 and amount > 0
-    ORDER BY payProgress asc
+    ORDER BY payProgress desc,date asc
   </select>
 
     <select id="companyAccount" resultType="com.tuoniao.vo.CompanyAccountVO">
