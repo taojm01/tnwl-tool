@@ -11,7 +11,9 @@
       DATE_FORMAT(tb.repayment_time,'%Y年%m月%d日') repayment,
       tb.amount amount,
       (select SUM(freight_paid) from tms_bill_detail tbd where tbd.invoice_no = tb.invoice_no) freightPaid,
-      (select SUM(unpaid_freight) from tms_bill_detail tbd where tbd.invoice_no = tb.invoice_no) unpaidFreight
+      (select SUM(unpaid_freight) from tms_bill_detail tbd where tbd.invoice_no = tb.invoice_no) unpaidFreight,
+      Round((select SUM(freight_paid) from tms_bill_detail tbd where tbd.invoice_no = tb.invoice_no)/tb.amount, 3) payProgress,
+      Round(tra.money/(select SUM(unpaid_freight) from tms_bill_detail tbd where tbd.invoice_no = tb.invoice_no), 3) canPayPercent
     FROM
       tms_bill tb
       LEFT JOIN tenant_recharge_account tra ON tb.tenant_id = tra.tenant_id
@@ -21,7 +23,8 @@
       AND tb.STATUS = 0
       AND tra.type = '舟山'
       AND tra.money > 0
-    ORDER BY sc.name_cn
+    HAVING unpaidFreight > 0 and amount > 0
+    ORDER BY payProgress asc
   </select>
 
     <select id="companyAccount" resultType="com.tuoniao.vo.CompanyAccountVO">

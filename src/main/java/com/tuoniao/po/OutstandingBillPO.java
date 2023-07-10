@@ -1,18 +1,13 @@
-package com.tuoniao.entity;
+package com.tuoniao.po;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
-public class OutstandingBill {
-
-    private Integer id;
-
-    private String company;
-
-    private BigDecimal rechargeBalance;
-
+@Builder
+public class OutstandingBillPO {
     private String date;
 
     private String repayment;

@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.tuoniao.dao.SearchMapper;
 import com.tuoniao.dto.AbnormalTrackDTO;
 import com.tuoniao.entity.OutstandingBill;
+import com.tuoniao.po.OutstandingBillPO;
 import com.tuoniao.vo.AbnormalTrackVO;
 import com.tuoniao.vo.OutstandingBillVO;
 import com.tuoniao.vo.CompanyAccountVO;
@@ -13,6 +14,7 @@ import com.tuoniao.vo.TransactionRecordVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +32,20 @@ public class SearchServiceImpl implements SearchService {
         searchMapper.outstandingBill().stream().collect(Collectors.groupingBy(OutstandingBill::getCompany))
                 .forEach((k, v) -> {
                     var header = String.format("%s 余额: %s", k, v.get(0).getRechargeBalance());
-                    list.add(OutstandingBillVO.builder().header(header).children(v).build());
+                    var children = v.stream()
+                            .map(r -> OutstandingBillPO.builder()
+                                    .date(r.getDate())
+                                    .repayment(r.getRepayment())
+                                    .amount(r.getAmount())
+                                    .freightPaid(r.getFreightPaid())
+                                    .unpaidFreight(r.getUnpaidFreight())
+                                    .payProgress(r.getPayProgress())
+                                    .canPayPercent(r.getCanPayPercent().compareTo(BigDecimal.ONE) > 0 ? BigDecimal.ONE : r.getCanPayPercent())
+                                    .build()).toList();
+                    list.add(OutstandingBillVO.builder()
+                            .header(header)
+                            .children(children)
+                            .build());
                 });
         return list;
     }

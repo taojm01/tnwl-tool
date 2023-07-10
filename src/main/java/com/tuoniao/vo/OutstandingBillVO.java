@@ -1,6 +1,6 @@
 package com.tuoniao.vo;
 
-import com.tuoniao.entity.OutstandingBill;
+import com.tuoniao.po.OutstandingBillPO;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,5 +12,5 @@ public class OutstandingBillVO {
 
     private String header;
 
-    private List<OutstandingBill> children;
+    private List<OutstandingBillPO> children;
 }
