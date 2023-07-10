@@ -97,7 +97,7 @@
         ocp.state NOT IN ( 11, 12, 13, 15 )
         AND ocp.is_now_settle IN ( 1, 2, 3 )
         AND oo.invalid_reason = '轨迹异常'
-      <if test="id != null">
+      <if test="id != null and id != ''">
         and ocp.id = #{id,jdbcType=INTEGER}
       </if>
       <if test="makeBoxTimeStart != null and makeBoxTimeStart.length() > 0">
@@ -106,7 +106,7 @@
       <if test="makeBoxTimeEnd != null and makeBoxTimeEnd.length() > 0">
         AND ocp.make_box_time <![CDATA[ <= CONCAT(#{makeBoxTimeEnd}, ' 23:59:59') ]]>
       </if>
-      <if test="orderNo != null">
+      <if test="orderNo != null and orderNo != ''">
         and ocp.order_no = #{orderNo,jdbcType=VARCHAR}
       </if>
       ORDER BY id DESC
