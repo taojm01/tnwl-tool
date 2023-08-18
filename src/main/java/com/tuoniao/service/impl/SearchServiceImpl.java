@@ -52,7 +52,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<CompanyAccountVO> companyAccount(String companyNameLike) {
-        var list = searchMapper.companyAccount(companyNameLike);
+        var list = searchMapper.companyAccount(companyNameLike.trim());
         return list.stream().peek(r -> {
             var password = ObjectUtil.defaultIfNull(AESUtil.Decrypt(r.getPassword()), r.getPassword());
             r.setPassword(password);
@@ -72,7 +72,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<TransactionRecordVO> transactionRecordByOrderNo(String orderNo) {
-        return searchMapper.transactionRecordByOrderNo(orderNo);
+        return searchMapper.transactionRecordByOrderNo(orderNo.trim());
     }
 
     @Override
