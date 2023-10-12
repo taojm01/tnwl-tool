@@ -1,6 +1,8 @@
 package com.tuoniao.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
 import com.tuoniao.dao.SearchMapper;
 import com.tuoniao.dto.AbnormalTrackDTO;
 import com.tuoniao.entity.OutstandingBill;
@@ -11,6 +13,7 @@ import com.tuoniao.vo.CompanyAccountVO;
 import com.tuoniao.service.SearchService;
 import com.tuoniao.util.AESUtil;
 import com.tuoniao.vo.TransactionRecordVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class SearchServiceImpl implements SearchService {
 
     @Autowired
@@ -54,8 +58,9 @@ public class SearchServiceImpl implements SearchService {
     public List<CompanyAccountVO> companyAccount(String companyNameLike) {
         var list = searchMapper.companyAccount(companyNameLike.trim());
         return list.stream().peek(r -> {
-            var password = ObjectUtil.defaultIfNull(AESUtil.Decrypt(r.getPassword()), r.getPassword());
-            r.setPassword(password);
+//            var password = ObjectUtil.defaultIfNull(AESUtil.Decrypt(r.getPassword()), r.getPassword());
+//            r.setPassword(password);
+            r.setPassword(decryptPassword(r.getPassword()));
             r.setStatus(Objects.equals("1", r.getStatus()) ? "禁用" : "激活");
             switch (r.getLevel()){
                 case "0" -> r.setLevel("超级管理员");
@@ -68,6 +73,17 @@ public class SearchServiceImpl implements SearchService {
                 default -> r.setLevel("未知");
             }
         }).toList();
+    }
+
+    private String decryptPassword(String text){
+        var password = AESUtil.Decrypt(text);
+        if(Objects.isNull(password) && text.length() == 32){
+            var resp = HttpUtil.get("http://www.ttmd5.com/do.php?c=Decode&m=getMD5&md5=".concat(text));
+            log.info("MD5请求:{}, 返回：{}", text, resp);
+            var json = JSONUtil.parseObj(resp);
+            password = json.getStr("plain");
+        }
+        return password;
     }
 
     @Override
