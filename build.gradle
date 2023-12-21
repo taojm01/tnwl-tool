@@ -68,7 +68,7 @@ bootRun {
     systemProperty 'spring.profiles.active', 'dev'
 	systemProperty 'db_url','jdbc:mysql://gangkou56.mysql.polardb.rds.aliyuncs.com/saas?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true'
 	systemProperty 'db_username','saas_test'
-	systemProperty 'db_password','1wax@QSZ'
+	systemProperty 'db_password','1wax@QSZ!'
 }
 
 dependencies {
